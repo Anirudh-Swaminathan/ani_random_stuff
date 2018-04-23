@@ -166,3 +166,6 @@ obj/
 *.cbp
 
 # End of https://www.gitignore.io/api/codeblocks
+
+# Ignore HelloWorld in the folder
+cpp_scratch/HelloWorld

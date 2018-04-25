@@ -22,6 +22,40 @@ void returnNothing()
     // This function does not return a value so no return statement is needed
 }
 
+// function to get value from the user and return it to the caller
+int getValueFromUser()
+{
+    std::cout << "Enter an integer: ";
+    int a;
+    std::cin >> a;
+    return a;
+}
+
+void printA()
+{
+    std::cout << "A" << std::endl;
+}
+
+void printB()
+{
+    std::cout << "B" << std::endl;
+}
+
+void printAB()
+{
+    printA();
+    printB();
+}
+
+int getNumber()
+{
+    std::cout << "Enter an integer: ";
+    int x;
+    std::cin >> x;
+    std::cout << "You have entered " << x << " within getNumber()." << std::endl;
+    // No return statement gives junk value
+}
+
 int main()
 {
     std::cout << "Starting main()" << std::endl;
@@ -32,8 +66,12 @@ int main()
     // The CPU will execute the next line of code once doPrint()
     // function has finished execution
     // This line calls the function return5() and prints the return value
+
+    // !!! The name of the function is a pointer to that function !!!
+    // !!! Hence, if the function is called without braces, no compiler error occurs !!!
+    // !!! It depends on the compiler what value is output !!!
     std::cout << return5() << std::endl;
-    std::cout << return5()+2 << std::endl;
+    std::cout << return5+2 << std::endl;
 
     // The main function does nothing with this value and hence this
     // statement is ignored.
@@ -44,6 +82,16 @@ int main()
 
     // !! The following line will throw a compile error !!
     // std::cout << returnNothing();
+    int x = getValueFromUser();
+    int y = getValueFromUser();
+    std::cout << x << " + " << y << " = " << x+y << std::endl;
+
+    printAB();
+
+    // Calling function that prints to console within the cout statement
+    // The function call always takes precedence over the (<<) operator
+    // Output:- Whatever is output in getNumber() and then only this cout below
+    std::cout << "Calling getNumber() " << getNumber() << std::endl;
 
     std::cout << "Ending main()" << std::endl;
     return 0;

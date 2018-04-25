@@ -14,3 +14,5 @@ Completed Parts + Summary for learncpp.org
 1.3 - Varaibles, definition. l-values and r-values. Initialization
         vs. Assignment. Undefined behaviour
 1.3a - cout, endl, cin, output(<<) and input(>>) operators
+1.4 - functions, return values and types, reusing functions,
+      function call precedence over (<<), pointers to function names

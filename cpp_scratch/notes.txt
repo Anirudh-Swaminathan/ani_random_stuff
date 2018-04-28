@@ -17,3 +17,5 @@ Completed Parts + Summary for learncpp.org
 1.4 - functions, return values and types, reusing functions,
       function call precedence over (<<), pointers to function names
 1.4a - function parameters and arguments, pass-by-value
+1.4b - Usefulness of functions - Organization, reusability, testing, 
+       extensibility, abstraction. Refactoring meaning

@@ -19,3 +19,5 @@ Completed Parts + Summary for learncpp.org
 1.4a - function parameters and arguments, pass-by-value
 1.4b - Usefulness of functions - Organization, reusability, testing, 
        extensibility, abstraction. Refactoring meaning
+1.4c - Keywords and naming identifiers, good naming conventions
+1.4d - Local scope

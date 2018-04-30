@@ -21,3 +21,5 @@ Completed Parts + Summary for learncpp.org
        extensibility, abstraction. Refactoring meaning
 1.4c - Keywords and naming identifiers, good naming conventions
 1.4d - Local scope
+1.5 - Literals, operands, operators -> unary, binary, and ternary
+1.6 - Whitespaces, basic formatting. 6 rules to follow

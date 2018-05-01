@@ -23,3 +23,5 @@ Completed Parts + Summary for learncpp.org
 1.4d - Local scope
 1.5 - Literals, operands, operators -> unary, binary, and ternary
 1.6 - Whitespaces, basic formatting. 6 rules to follow
+1.7 - Forward declaration of functions. Declaration vs definition.
+      ODR. Function prototypes.

@@ -25,3 +25,4 @@ Completed Parts + Summary for learncpp.org
 1.6 - Whitespaces, basic formatting. 6 rules to follow
 1.7 - Forward declaration of functions. Declaration vs definition.
       ODR. Function prototypes.
+1.8 - Multiple files for a single program.

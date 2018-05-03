@@ -1,6 +1,10 @@
 #include <iostream>
 
-int add(int x,  int y);
+// The following line works only if the program is in the same project
+// int add(int x,  int y);
+
+// The following is a try of my hack for making it work
+#include "p008_add.h"
 
 int main()
 {

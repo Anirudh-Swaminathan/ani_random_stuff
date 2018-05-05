@@ -26,3 +26,7 @@ Completed Parts + Summary for learncpp.org
 1.7 - Forward declaration of functions. Declaration vs definition.
       ODR. Function prototypes.
 1.8 - Multiple files for a single program.
+1.8a - Naming conflicts, namespaces and the std namespace.
+1.9 - Headers, their purposes. Header guards. Declaring vs defining
+       functions in headers. Handling different directories. Best pracices.
+

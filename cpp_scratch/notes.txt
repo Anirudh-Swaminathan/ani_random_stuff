@@ -29,4 +29,7 @@ Completed Parts + Summary for learncpp.org
 1.8a - Naming conflicts, namespaces and the std namespace.
 1.9 - Headers, their purposes. Header guards. Declaring vs defining
        functions in headers. Handling different directories. Best pracices.
+1.10 - Preprocessors. Macro defines -> function defines and object defines
+	Object defines with and without substitution text. Conditional
+	Compilation. Scope of defines -> Only within a single file.
 

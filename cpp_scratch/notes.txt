@@ -32,4 +32,7 @@ Completed Parts + Summary for learncpp.org
 1.10 - Preprocessors. Macro defines -> function defines and object defines
 	Object defines with and without substitution text. Conditional
 	Compilation. Scope of defines -> Only within a single file.
+1.10a - Header guards to remove duplicate definitions of functions.
+	Limitations of header guards. Multiple declarations allowed, not 
+	multiple definitions. #pragma usage.
 

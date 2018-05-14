@@ -35,4 +35,4 @@ Completed Parts + Summary for learncpp.org
 1.10a - Header guards to remove duplicate definitions of functions.
 	Limitations of header guards. Multiple declarations allowed, not 
 	multiple definitions. #pragma usage.
-
+1.10b - 8 steps for designing any program. Some advice on writing programs

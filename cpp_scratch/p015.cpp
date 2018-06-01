@@ -37,6 +37,7 @@ int calculateResult(int x, int op, int y)
 
 void printResult(int result)
 {
+    // Print the output onto the users console
     std::cout << "Your result is: " << result << std::endl;
 }
 

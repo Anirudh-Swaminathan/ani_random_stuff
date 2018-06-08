@@ -53,3 +53,5 @@ Completed Parts + Summary for learncpp.org
       d. Don't define multiple variables in the same line if initializing any
       of them.
       e. Define variables as close to their first use as far as possible.
+2.2 - Void. Usage. Empty parameter list(implicit void) instead of specfying void.
+      Parameter, return value and pointers

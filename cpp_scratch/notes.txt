@@ -38,3 +38,5 @@ Completed Parts + Summary for learncpp.org
 1.10b - 8 steps for designing any program. Some advice on writing programs
 1.11 - Syntax and semantic Errors. Debugger. Stepping -> into, over, out
         Run to cursor. Run/continue/go. Breakpoints.
+1.12 - Comprehensive quiz on Chapter 1 concepts
+

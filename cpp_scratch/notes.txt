@@ -55,3 +55,4 @@ Completed Parts + Summary for learncpp.org
       e. Define variables as close to their first use as far as possible.
 2.2 - Void. Usage. Empty parameter list(implicit void) instead of specfying void.
       Parameter, return value and pointers
+2.3 - Variable size and the sizeof operator. "\t" is tab character

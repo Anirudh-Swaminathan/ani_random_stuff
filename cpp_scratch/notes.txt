@@ -66,3 +66,28 @@ Completed Parts + Summary for learncpp.org
       Default is signed. Favour signed integers to unsigned integers
       Integer OVerflow. Do NOT depend on the results of overflow for programs
       Integer Division fundamentals.
+2.4a - Fixed-width integers. C99 stdint.h C11 cstdint. Major types are:-
+       int8_t   1 byte signed
+       uint8_t  1 byte unsigned
+       int16_t  2 byte signed
+       uint16_t 2 byte unsigned
+       int32_t  4 byte signed
+       uint32_t 4 byte unsigned
+       int64_t  8 byte signed
+       uint64_t 8 byte unsigned
+       All of these types defined inside the std namespace
+       IMP - Avoid int8_t and uint8_t as much as possible. If used, they are
+       usually used as characters
+       Fast and Least types. For example, int_fast32_t, int_least32_t.
+       4 integer best practices:-
+       * Prefer int when size of integer doesn't matter
+       * Use int_fast#_t for performance.(# -> 8, 16, 32, 64)
+       * Use int_least#_t for memory.(# -> 8, 16, 32, 64)
+       * Use unsigned only when there is a compelling reason
+       * Avoid compiler defined versions of fixed width types
+       * Don't mix signed and unsigned types unless you want your code to go
+         ballistic!!
+       One important point is that C++ will freely convert between signed and
+       unsigned numbers, but it won’t do any range checking to make sure you
+       don’t overflow your type. Hence there's no good way to guard against
+       mixing of signed and unsigned integers

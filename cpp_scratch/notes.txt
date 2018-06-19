@@ -56,3 +56,13 @@ Completed Parts + Summary for learncpp.org
 2.2 - Void. Usage. Empty parameter list(implicit void) instead of specfying void.
       Parameter, return value and pointers
 2.3 - Variable size and the sizeof operator. "\t" is tab character
+2.4 - Integrs. 5 fundamental integer types -> char, short, int, long, long
+      long.
+      Important! C++ only guarantees types will have some minimum size, and
+      not a specific size.
+      signed and unsigned integers.
+      n-bit signed range -> -2^(n-1) to +(2^(n-1))-1
+      n-bit unsigned range -> 0 to +2^(n)-1
+      Default is signed. Favour signed integers to unsigned integers
+      Integer OVerflow. Do NOT depend on the results of overflow for programs
+      Integer Division fundamentals.

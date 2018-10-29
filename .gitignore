@@ -150,3 +150,36 @@ venv.bak/
 .mypy_cache/
 
 # End of https://www.gitignore.io/api/python
+
+# Created by https://www.gitignore.io/api/codeblocks
+
+### CodeBlocks ###
+# specific to CodeBlocks IDE
+*.layout
+*.depend
+
+# generated directories
+bin/
+obj/
+
+# generated project file
+*.cbp
+
+# End of https://www.gitignore.io/api/codeblocks
+
+### Vim ###
+## swap
+.sw[a-p]
+.*.sw[a-p]
+## session
+Session.vim
+## temporary
+.netrwhist
+*~
+## auto-generated tag files
+tags
+
+## End of https://www.gitignore.io/api/vim
+
+# Ignore HelloWorld in the folder
+cpp_scratch/HelloWorld

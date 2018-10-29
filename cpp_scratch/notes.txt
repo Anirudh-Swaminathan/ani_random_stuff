@@ -1,0 +1,93 @@
+Completed Parts + Summary for learncpp.org
+
+0.1 - Basic intro to the tutorials
+0.2 - Machine Language, Assembly Language and High Level Language
+0.3 - Intro to C++
+0.4 - 6 steps of development
+0.5 - CodeBlocks installation
+0.6 - Builing projects and compiling code
+0.6a - IDE build configurations
+0.7 - 13 common C++ problems
+
+1.1 - Statements, Expressions, functions and libraries. Syntax Errors
+1.2 - Comments. 4 reasons to write comments. Good comments
+1.3 - Varaibles, definition. l-values and r-values. Initialization
+        vs. Assignment. Undefined behaviour
+1.3a - cout, endl, cin, output(<<) and input(>>) operators
+1.4 - functions, return values and types, reusing functions,
+      function call precedence over (<<), pointers to function names
+1.4a - function parameters and arguments, pass-by-value
+1.4b - Usefulness of functions - Organization, reusability, testing, 
+       extensibility, abstraction. Refactoring meaning
+1.4c - Keywords and naming identifiers, good naming conventions
+1.4d - Local scope
+1.5 - Literals, operands, operators -> unary, binary, and ternary
+1.6 - Whitespaces, basic formatting. 6 rules to follow
+1.7 - Forward declaration of functions. Declaration vs definition.
+      ODR. Function prototypes.
+1.8 - Multiple files for a single program.
+1.8a - Naming conflicts, namespaces and the std namespace.
+1.9 - Headers, their purposes. Header guards. Declaring vs defining
+       functions in headers. Handling different directories. Best pracices.
+1.10 - Preprocessors. Macro defines -> function defines and object defines
+	Object defines with and without substitution text. Conditional
+	Compilation. Scope of defines -> Only within a single file.
+1.10a - Header guards to remove duplicate definitions of functions.
+	Limitations of header guards. Multiple declarations allowed, not 
+	multiple definitions. #pragma usage.
+1.10b - 8 steps for designing any program. Some advice on writing programs
+1.11 - Syntax and semantic Errors. Debugger. Stepping -> into, over, out
+        Run to cursor. Run/continue/go. Breakpoints.
+1.12 - Comprehensive quiz on Chapter 1 concepts
+
+2.1 - Basics of addressing memory. Fundamental data types - bool, char, float,
+      int and void.
+      Variable definition and initialization. Copy initializaton, direct
+      initialization and uniform initialization.
+      Good practices:-
+      a. Direct initialization is preferred over copy initialization.
+      b. Uniform initialization is preferred for newer versions of the C++
+      compiler.
+      c. Always initialize fundamental variables or assign a value to them as
+      soon as possible after their definition.
+      d. Don't define multiple variables in the same line if initializing any
+      of them.
+      e. Define variables as close to their first use as far as possible.
+2.2 - Void. Usage. Empty parameter list(implicit void) instead of specfying void.
+      Parameter, return value and pointers
+2.3 - Variable size and the sizeof operator. "\t" is tab character
+2.4 - Integrs. 5 fundamental integer types -> char, short, int, long, long
+      long.
+      Important! C++ only guarantees types will have some minimum size, and
+      not a specific size.
+      signed and unsigned integers.
+      n-bit signed range -> -2^(n-1) to +(2^(n-1))-1
+      n-bit unsigned range -> 0 to +2^(n)-1
+      Default is signed. Favour signed integers to unsigned integers
+      Integer OVerflow. Do NOT depend on the results of overflow for programs
+      Integer Division fundamentals.
+2.4a - Fixed-width integers. C99 stdint.h C11 cstdint. Major types are:-
+       int8_t   1 byte signed
+       uint8_t  1 byte unsigned
+       int16_t  2 byte signed
+       uint16_t 2 byte unsigned
+       int32_t  4 byte signed
+       uint32_t 4 byte unsigned
+       int64_t  8 byte signed
+       uint64_t 8 byte unsigned
+       All of these types defined inside the std namespace
+       IMP - Avoid int8_t and uint8_t as much as possible. If used, they are
+       usually used as characters
+       Fast and Least types. For example, int_fast32_t, int_least32_t.
+       4 integer best practices:-
+       * Prefer int when size of integer doesn't matter
+       * Use int_fast#_t for performance.(# -> 8, 16, 32, 64)
+       * Use int_least#_t for memory.(# -> 8, 16, 32, 64)
+       * Use unsigned only when there is a compelling reason
+       * Avoid compiler defined versions of fixed width types
+       * Don't mix signed and unsigned types unless you want your code to go
+         ballistic!!
+       One important point is that C++ will freely convert between signed and
+       unsigned numbers, but it won’t do any range checking to make sure you
+       don’t overflow your type. Hence there's no good way to guard against
+       mixing of signed and unsigned integers

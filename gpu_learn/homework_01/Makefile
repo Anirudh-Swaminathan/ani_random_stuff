@@ -5,22 +5,24 @@ NVCC=nvcc
 # locations on most linux distros #
 ###################################
 
-OPENCV_LIBPATH=/usr/lib
-OPENCV_INCLUDEPATH=/usr/include
+# anicodebreaker modifications on August 31, 2020
+# OPENCV_LIBPATH=/usr/lib
+# OPENCV_INCLUDEPATH=/usr/include
 
 ###################################################
 # On Macs the default install locations are below #
 ###################################################
 
-#OPENCV_LIBPATH=/usr/local/lib
-#OPENCV_INCLUDEPATH=/usr/local/include
+OPENCV_LIBPATH=/usr/local/lib
+OPENCV_INCLUDEPATH=/usr/local/include
 
 # or if using MacPorts
 
 #OPENCV_LIBPATH=/opt/local/lib
 #OPENCV_INCLUDEPATH=/opt/local/include
 
-OPENCV_LIBS=-lopencv_core -lopencv_imgproc -lopencv_highgui
+# OPENCV_LIBS=-lopencv_core -lopencv_imgproc -lopencv_highgui
+OPENCV_LIBS=`pkg-config opencv --cflags --libs`
 
 #CUDA_INCLUDEPATH=/usr/local/cuda-5.0/include
 

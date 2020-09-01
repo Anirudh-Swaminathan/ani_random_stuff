@@ -13,6 +13,7 @@ project(hw1_ani)
 # anicodebreaker lines
 include(FindCUDA)
 find_package(CUDA REQUIRED)
+find_package(OpenCV REQUIRED)
 
 file( GLOB  hdr *.hpp *.h )
 file( GLOB  cu  *.cu)
@@ -20,3 +21,4 @@ SET (HW1_files main.cpp reference_calc.cpp compare.cpp)
 
 # CUDA_ADD_EXECUTABLE(HW1 ${HW1_files} ${hdr} ${cu})
 cuda_add_executable(HW1 ${HW1_files} ${hdr} ${cu})
+target_link_libraries( HW1 ${OpenCV_LIBS} )

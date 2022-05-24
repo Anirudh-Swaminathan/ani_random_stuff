@@ -1,0 +1,82 @@
+\chapter{C++ Basics: Functions and Files}
+
+Topics:
+\begin{itemize}
+    \item Basics of addressing memory.
+    \item Void
+    \item Variable size and sizeof operator
+    \item Integers
+    \begin{itemize}
+        \item Introduction
+        \item Fixed-width integers
+    \end{itemize}
+\end{itemize}
+
+\section{Basics of addressing memory}
+Fundamental data types - bool, char, float, int and void.
+Variable definition and initialization. Copy initializaton, direct initialization and uniform initialization.
+Good practices:-
+\begin{itemize}
+    \item Direct initialization is preferred over copy initialization.
+    \item Uniform initialization is preferred for newer versions of the C++
+    compiler.
+    \item Always initialize fundamental variables or assign a value to them as
+    soon as possible after their definition.
+    \item Don't define multiple variables in the same line if initializing any
+    of them.
+    \item Define variables as close to their first use as far as possible.
+\end{itemize}
+
+\section{Void}
+Usage. Empty parameter list(implicit void) instead of specfying void.
+Parameter, return value and pointers
+
+\section{Variable size and the sizeof operator}
+\textbackslash t is a tab character
+
+\section{Integers}
+
+\subsection{Introduction}
+5 fundamental integer types -> char, short, int, long, long long.
+Important! C++ only guarantees types will have some minimum size, and not a specific size. signed and unsigned integers.
+n-bit signed range -> \[ -2^(n-1) to +(2^(n-1))-1 \]
+n-bit unsigned range -> \[ 0 to +2^(n)-1 \]
+Default is signed. Favour signed integers to unsigned integers
+Integer OVerflow. Do NOT depend on the results of overflow for programs
+Integer Division fundamentals.
+
+\subsection{Fixed-width integers}
+C99 stdint.h C11 cstdint. Major types are:- \\
+\begin{tabular}{|c|c|}
+    \hline
+    \textbf{Type} & \textbf{Type Size} \\
+    \hline
+    int8\_t & 1 byte unsigned \\
+    uint8\_t & 1 byte unsigned \\
+    int16\_t & 2 byte signed \\
+    uint16\_t & 2 byte unsigned \\
+    int32\_t & 4 byte signed \\
+    uint32\_t & 4 byte unsigned \\
+    int64\_t & 8 byte signed \\
+    uint64\_t & 8 byte unsigned \\
+    \hline
+\end{tabular}
+\\
+All of these types defined inside the STD namespace.
+IMP - Avoid int8\_t and uint8\_t as much as possible. If used, they are
+usually used as characters
+Fast and Least types. For example, int\_fast32\_t, int\_least32\_t.
+$6$ integers best practices:-
+\begin{itemize}
+    \item Prefer int when size of integer doesn't matter
+    \item Use int\_fast\#\_t for performance. (\# -> $8, 16, 32, 64$)
+    \item Use int\_least\#\_t for memory. (\# -> $8, 16, 32, 64$)
+    \item Use unsigned only when there is a compelling reason
+    \item Avoid compiler defined versions of fixed width types
+    \item Don't mix signed and unsigned types unless I want my code to go ballistic!!
+\end{itemize}
+
+One important point is that C++ will freely convert between signed and
+unsigned numbers, but it won’t do any range checking to make sure you
+don’t overflow your type. Hence there's no good way to guard against
+mixing of signed and unsigned integers

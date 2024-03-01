@@ -11,7 +11,8 @@ struct Foo
     {
         std::cout << "Foo::~Foo(), bar = " << bar << " @ " << this << '\n';
     }
-    int getBar() const noexcept { return bar; }
+    template<typename T>
+    const T getBar() const noexcept { return static_cast<T>(bar); }
 private:
     int bar;
 };
@@ -19,7 +20,7 @@ private:
 int main()
 {
     void* ptr = new Foo(42);
-    ((Foo*)ptr)->getBar();
+    std::cout << "Foo bar is " << ((Foo*)ptr)->getBar<float>() << std::endl;
     // comment out next line to trigger a memory leak
     delete ((Foo*)ptr);
 }

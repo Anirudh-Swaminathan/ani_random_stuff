@@ -56,6 +56,28 @@ void func(int **a)
     cout << "In func pass by double pointer, &a = " << &a << endl;
 }
 
+void func(void **a)
+{
+    int** q = (int**)a;
+    cout << "In func pass by void double pointer, **a = " << **(int**)a << endl;
+    cout << "In func pass by void double pointer, *a = " << *a << endl;
+    cout << "In func pass by void double pointer, a = " << a << endl;
+    cout << "In func pass by void double pointer, &a = " << &a << endl;
+    cout << "In func pass by void double pointer, **q = " << **q << endl;
+    cout << "In func pass by void double pointer, *q = " << *q << endl;
+    cout << "In func pass by void double pointer, q = " << q << endl;
+    cout << "In func pass by void double pointer, &q = " << &q << endl;
+    **q = 175;
+    cout << "In func pass by void double pointer, **a = " << **(int**)a << endl;
+    cout << "In func pass by void double pointer, *a = " << *a << endl;
+    cout << "In func pass by void double pointer, a = " << a << endl;
+    cout << "In func pass by void double pointer, &a = " << &a << endl;
+    cout << "In func pass by void double pointer, **q = " << **q << endl;
+    cout << "In func pass by void double pointer, *q = " << *q << endl;
+    cout << "In func pass by void double pointer, q = " << q << endl;
+    cout << "In func pass by void double pointer, &q = " << &q << endl;
+}
+
 int main()
 {
     int a = 25;
@@ -85,6 +107,11 @@ int main()
     cout << "In main, ptr = " << ptr << endl;
     cout << "In main, memory address of ptr = " << &ptr << endl;
     func(&ptr);
+    cout << "In main, a = " << a << endl;
+    cout << "In main, memory address of a = " << &a << endl;
+    cout << "In main, ptr = " << ptr << endl;
+    cout << "In main, memory address of ptr = " << &ptr << endl;
+    func((void**)&ptr);
     cout << "In main, a = " << a << endl;
     cout << "In main, memory address of a = " << &a << endl;
     cout << "In main, ptr = " << ptr << endl;

@@ -6,6 +6,7 @@ import torch
 import networkx as nx
 from matplotlib import pyplot as plt
 from torch_geometric.datasets import KarateClub
+from torch_geometric.utils import to_networkx
 
 """
 Introduction to PyTorch Geometric and Karate Club Dataset
@@ -141,6 +142,12 @@ def main():
     print(f"Edge index tensor device: {edge_index.t().device}")
     print(f"Edge index tensor dtype: {edge_index.t().dtype}")
     print(f"==========================================")
+
+    # convert the graph to networkx
+    G = to_networkx(data, to_undirected=True, remove_self_loops=True)
+
+    # visualize the graph and save it to a file
+    visualize_graph(G, color=data.y.cpu().numpy(), save_path="karate_club_graph.png")
 
 
 if __name__ == "__main__":

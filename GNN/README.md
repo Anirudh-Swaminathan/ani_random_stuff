@@ -6,5 +6,5 @@ The link to the tutorials is [PyTorch Geometric Tutorials](https://pytorch-geome
 
 ## Tutorials
 
-1. [Introduction: Hands-on Graph Neural Networks](./introduction/README.md)
+1. [Introduction: Hands-on Graph Neural Networks](./introduction/)
 

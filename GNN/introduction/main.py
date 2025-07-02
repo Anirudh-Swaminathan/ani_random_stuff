@@ -8,6 +8,10 @@ from matplotlib import pyplot as plt
 from torch_geometric.datasets import KarateClub
 from torch_geometric.utils import to_networkx
 
+# Model architecture related imports
+from torch.nn import Linear
+from torch_geometric.nn import GCNConv
+
 """
 Introduction to PyTorch Geometric and Karate Club Dataset
 Tutorial Google Colab Notebook Link: https://colab.research.google.com/drive/1h3-vJGRVloF5zStxL5I0rSy4ZUPNsjy8
@@ -73,6 +77,50 @@ def visualize_embedding(h, color, epoch=None, loss=None, save_path=None):
     else:
         print("No valid save path provided, displaying embedding instead.")
     plt.show()
+
+
+class GCN(torch.nn.Module):
+    """
+    A simple Graph Convolutional Network (GCN) model for node classification.
+    """
+    def __init__(self, num_features, num_classes):
+        # call the parent constructor
+        super().__init__()
+
+        # set torch manual seed for reproducibility
+        torch.manual_seed(1234)
+
+        # First graph convolution layer
+        self.conv1 = GCNConv(num_features, 4)
+
+        # Second graph convolution layer
+        self.conv2 = GCNConv(4, 4)
+
+        # third graph convolution layer
+        self.conv3 = GCNConv(4, 2)
+
+        # Linear layer for final classification output
+        self.classifier = Linear(2, num_classes)
+
+    def forward(self, x, edge_index):
+        # First graph convolution layer with tanh activation
+        h = self.conv1(x, edge_index)
+        h = h.tanh()
+
+        # Second graph convolution layer with tanh activation
+        h = self.conv2(h, edge_index)
+        h = h.tanh()
+
+        # Third graph convolution layer with tanh activation
+        # This yields the final GNN embedding space
+        h = self.conv3(h, edge_index)
+        h = h.tanh()
+
+        # Apply a final (linear) classifier to the GNN embedding space
+        out = self.classifier(h)
+
+        # Return the output and the intermediate node embeddings
+        return out, h
 
 def main():
     # capture torch version
@@ -148,6 +196,12 @@ def main():
 
     # visualize the graph and save it to a file
     visualize_graph(G, color=data.y.cpu().numpy(), save_path="karate_club_graph.png")
+
+    # instantiate the GCN model
+    model = GCN(num_features=dataset.num_features, num_classes=dataset.num_classes).to(device)
+    print(f"===========================================")
+    print(f"Model architecture:\n{model}")
+    print(f"===========================================")
 
 
 if __name__ == "__main__":

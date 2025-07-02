@@ -59,6 +59,15 @@ Edge index tensor device: cuda:0
 Edge index tensor dtype: torch.int64
 ==========================================
 Graph saved to karate_club_graph.png
+===========================================
+Model architecture:
+GCN(
+  (conv1): GCNConv(34, 4)
+  (conv2): GCNConv(4, 4)
+  (conv3): GCNConv(4, 2)
+  (classifier): Linear(in_features=2, out_features=4, bias=True)
+)
+===========================================
 ```
 
 A visualization of the graph is found in this image output:

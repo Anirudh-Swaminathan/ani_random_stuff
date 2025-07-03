@@ -68,9 +68,24 @@ GCN(
   (classifier): Linear(in_features=2, out_features=4, bias=True)
 )
 ===========================================
+============================================
+Initial node embeddings shape: torch.Size([34, 2])
+Initial node embeddings device: cuda:0
+Initial node embeddings dtype: torch.float32
+============================================
+Embedding visualization saved to karate_club_initial_embeddings.png
 ```
 
 A visualization of the graph is found in this image output:
 
 ![Karate Club Graph](./karate_club_graph.png)
+
+### Initial Node Embeddings
+
+Even without training with completely random initial weights, nodes of the same class would be clustered together in the embedding space.
+This means GNNs introduce a strong inductive bias, leading to similar embeddings for nodes that are close to each other in the input graph.
+
+A visualization of the initial embedding of the graph is found in this image output:
+
+![Karate Club Initial Embeddings](./karate_club_initial_embeddings.png)
 

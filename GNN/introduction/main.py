@@ -203,6 +203,20 @@ def main():
     print(f"Model architecture:\n{model}")
     print(f"===========================================")
 
+    # Compute initial embedding, visualize it, and save to file
+    # Even without training, with completely random initial weights,
+    # nodes of the same class would be clustered together in the embedding space
+    # This means GNNs introduce a strong inductive bias, leading to similar embeddings
+    # for nodes that are close to each other in the input graph.
+    with torch.no_grad():
+        _, h = model(data.x, edge_index)
+        print(f"============================================")
+        print(f"Initial node embeddings shape: {h.shape}")
+        print(f"Initial node embeddings device: {h.device}")
+        print(f"Initial node embeddings dtype: {h.dtype}")
+        print(f"============================================")
+        visualize_embedding(h, color=data.y.cpu().numpy(), save_path="karate_club_initial_embeddings.png")
+
 
 if __name__ == "__main__":
     main()

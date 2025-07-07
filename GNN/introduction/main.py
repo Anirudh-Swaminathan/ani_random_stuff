@@ -45,16 +45,39 @@ def visualize_graph(G, color, save_path=None):
     plt.show()
 
 # function to visualize embeddings
-def visualize_embedding(h, color, epoch=None, loss=None, save_path=None):
-    plt.figure(figsize=(7, 7))
-    plt.xticks([])
-    plt.yticks([])
+def visualize_embedding(fig, h, color, subidx='111', epoch=None, loss=None):
+    """
+    Visualizes the node embeddings in a 2D scatter plot.
+
+    @param fig: The figure object to plot on (required)
+    @oaram h: The node embeddings tensor (required)
+    @param color: The color array for the nodes (required)
+    @param subidx: Subplot index for multi-plotting (default '111')
+    @param epoch: The current training epoch (optional)
+    @param loss: The current loss value (optional)
+
+    @return: None
+
+    @raises ValueError: If subidx is not a valid subplot index.
+    """
+    # Check if the subidx is a valid subplot index
+    if not isinstance(subidx, str) or len(subidx) != 3 or not subidx.isdigit():
+        raise ValueError("subidx must be a string of three digits (e.g., '111')")
+
+    # Convert subidx to integer for subplot indexing
+    try:
+        subidx = int(subidx)
+    except ValueError:
+        raise ValueError("subidx must be convertible to an integer.")
+
+    # Add a subplot at subplot index subidx to the figure fig
+    ax = fig.add_subplot(subidx)
 
     # detach h to CPU and convert to numpy
     h = h.detach().cpu().numpy()
 
     # plot a scatter map of first two dimensions of h
-    plt.scatter(h[:, 0],
+    ax.scatter(h[:, 0],
                 h[:, 1],
                 c=color,
                 cmap="Set2",
@@ -63,20 +86,12 @@ def visualize_embedding(h, color, epoch=None, loss=None, save_path=None):
                 alpha=0.7)
 
     if epoch is not None and loss is not None:
-        plt.title(f"Epoch: {epoch}, Loss: {loss.item():.4f}", fontsize=16)
+        ax.set_title(f"Epoch: {epoch}, Loss: {loss.item():.4f}", fontsize=16)
     else:
-        plt.title("Node Embeddings Visualization")
+        ax.set_title("Node Embeddings Visualization")
 
-    plt.xlabel("Embedding Dimension 1")
-    plt.ylabel("Embedding Dimension 2")
-
-    # save image to file if save_path is valid image file path that can be created
-    if save_path and os.path.splitext(save_path)[1] in ['.png', '.jpg', '.jpeg']:
-        plt.savefig(save_path, format='png', bbox_inches='tight')
-        print(f"Embedding visualization saved to {save_path}")
-    else:
-        print("No valid save path provided, displaying embedding instead.")
-    plt.show()
+    ax.set_xlabel("Embedding Dimension 1")
+    ax.set_ylabel("Embedding Dimension 2")
 
 
 class GCN(torch.nn.Module):
@@ -215,7 +230,14 @@ def main():
         print(f"Initial node embeddings device: {h.device}")
         print(f"Initial node embeddings dtype: {h.dtype}")
         print(f"============================================")
-        visualize_embedding(h, color=data.y.cpu().numpy(), save_path="karate_club_initial_embeddings.png")
+
+        # create a figure for visualization
+        fig = plt.figure(figsize=(7, 7))
+        visualize_embedding(fig, h, color=data.y.cpu().numpy())
+        save_path = "karate_club_initial_embeddings.png"
+        plt.savefig(save_path, format='png', bbox_inches='tight')
+        print(f"Embedding visualization saved to {save_path}")
+        plt.show()
 
 
 if __name__ == "__main__":

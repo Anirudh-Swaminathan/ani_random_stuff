@@ -74,6 +74,45 @@ Initial node embeddings device: cuda:0
 Initial node embeddings dtype: torch.float32
 ============================================
 Embedding visualization saved to karate_club_initial_embeddings.png
+============================================
+Loss function: CrossEntropyLoss()
+Optimizer: Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    lr: 0.01
+    maximize: False
+    weight_decay: 0
+)
+Number of training epochs: 400
+Visualizing node embeddings every 50 epochs
+============================================
+Starting training for 400 epochs...
+Epoch: 50, Loss: 0.5809
+Plotting node embeddings for epoch 50...
+Epoch: 100, Loss: 0.1823
+Plotting node embeddings for epoch 100...
+Epoch: 150, Loss: 0.1009
+Plotting node embeddings for epoch 150...
+Epoch: 200, Loss: 0.0671
+Plotting node embeddings for epoch 200...
+Epoch: 250, Loss: 0.0489
+Plotting node embeddings for epoch 250...
+Epoch: 300, Loss: 0.0376
+Plotting node embeddings for epoch 300...
+Epoch: 350, Loss: 0.0300
+Plotting node embeddings for epoch 350...
+Epoch: 400, Loss: 0.0247
+Plotting node embeddings for epoch 400...
+Training completed after 400 epochs.
+============================================
+Embedding visualization for training progress saved to karate_club_training_progress.png
+============================================
 ```
 
 A visualization of the graph is found in this image output:
@@ -88,4 +127,12 @@ This means GNNs introduce a strong inductive bias, leading to similar embeddings
 A visualization of the initial embedding of the graph is found in this image output:
 
 ![Karate Club Initial Embeddings](./karate_club_initial_embeddings.png)
+
+### Evolution of Node Embeddings through Training
+
+After training the GCN for 400 epochs, the node embeddings evolve to better represent the classes of the nodes in the graph.
+
+A visualization of the evolution of the node embeddings during training over multiple epochs is found in this image output:
+
+![Karate Club Node Embeddings Evolution](./karate_club_training_progress.png)
 

@@ -45,14 +45,14 @@ def visualize_graph(G, color, save_path=None):
     plt.show()
 
 # function to visualize embeddings
-def visualize_embedding(fig, h, color, subidx='111', epoch=None, loss=None):
+def visualize_embedding(fig, h, color, subidx: tuple=(1, 1, 1), epoch=None, loss=None):
     """
     Visualizes the node embeddings in a 2D scatter plot.
 
     @param fig: The figure object to plot on (required)
     @oaram h: The node embeddings tensor (required)
     @param color: The color array for the nodes (required)
-    @param subidx: Subplot index for multi-plotting (default '111')
+    @param subidx: tuple; Subplot index for multi-plotting (default (1, 1, 1))
     @param epoch: The current training epoch (optional)
     @param loss: The current loss value (optional)
 
@@ -61,17 +61,13 @@ def visualize_embedding(fig, h, color, subidx='111', epoch=None, loss=None):
     @raises ValueError: If subidx is not a valid subplot index.
     """
     # Check if the subidx is a valid subplot index
-    if not isinstance(subidx, str) or len(subidx) != 3 or not subidx.isdigit():
-        raise ValueError("subidx must be a string of three digits (e.g., '111')")
-
-    # Convert subidx to integer for subplot indexing
-    try:
-        subidx = int(subidx)
-    except ValueError:
-        raise ValueError("subidx must be convertible to an integer.")
+    if not isinstance(subidx, (tuple, str)):
+        raise ValueError("subidx must be a tuple or a string representing subplot index.")
+    if isinstance(subidx, tuple):
+        assert len(subidx) == 3, "subidx must be a tuple of length 3 (nrows, ncols, index)."
 
     # Add a subplot at subplot index subidx to the figure fig
-    ax = fig.add_subplot(subidx)
+    ax = fig.add_subplot(*subidx)
 
     # detach h to CPU and convert to numpy
     h = h.detach().cpu().numpy()
@@ -136,6 +132,34 @@ class GCN(torch.nn.Module):
 
         # Return the output and the intermediate node embeddings
         return out, h
+
+def train(model, data, optimizer, criterion, device):
+    """
+    A function to train the GCN model on the Karate Club dataset.
+
+    @param model: The GCN model to train (required)
+    @param data: The graph data object containing node features and edge indices (required)
+    @param optimizer: The optimizer for updating model weights (required)
+    @param criterion: The loss function for training (required)
+    @param device: The device (CPU or GPU) to perform computations on (required)
+
+    @return: The loss value and embeddings after training for one epoch.
+    """
+    # set the optimizer to zero gradients
+    optimizer.zero_grad()
+
+    # perform a single forward pass of the model
+    out, h = model(data.x.to(device), data.edge_index.to(device))
+
+    # compute the loss solely based on the training nodes
+    loss = criterion(out[data.train_mask], data.y[data.train_mask].to(device))
+
+    # Derive gradients for the model parameters
+    loss.backward()
+
+    # Update the model parameters using the optimizer based on the computed gradients
+    optimizer.step()
+    return loss, h
 
 def main():
     # capture torch version
@@ -238,6 +262,59 @@ def main():
         plt.savefig(save_path, format='png', bbox_inches='tight')
         print(f"Embedding visualization saved to {save_path}")
         plt.show()
+
+    # Set the model to training mode
+    model.train()
+
+    # Define the Loss function (CrossEntropyLoss for multi-class classification)
+    criterion = torch.nn.CrossEntropyLoss()
+    print(f"============================================")
+    print(f"Loss function: {criterion}")
+
+    # Define the optimizer (Adaptive Moment Estimation (Adam) optimizer)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)
+    print(f"Optimizer: {optimizer}")
+
+    # Number of training epochs
+    num_epochs = 400
+    print(f"Number of training epochs: {num_epochs}")
+
+    # Visualization frequency for node embeddings
+    vis_freq = 50
+    print(f"Visualizing node embeddings every {vis_freq} epochs")
+
+    # number of visualizations counter
+    n_vis = 0
+
+    # create a figure for visualization
+    fig = plt.figure(figsize=(7, 7))
+
+    print(f"============================================")
+    print(f"Starting training for {num_epochs} epochs...")
+    for epoch in range(1, num_epochs + 1):
+        # train the model for one epoch
+        loss, h = train(model, data, optimizer, criterion, device)
+
+        # if epoch is a multiple of vis_freq, visualize the embeddings
+        if epoch % vis_freq == 0:
+            # subplot index is based on the number of visualizations previously done
+            n_vis += 1
+            subidx = (n_vis, 1, n_vis)
+
+            print(f"Epoch: {epoch}, Loss: {loss.item():.4f}")
+            print(f"Plotting node embeddings for epoch {epoch}...")
+
+            # visualize the embeddings
+            visualize_embedding(fig, h, color=data.y.cpu().numpy(), subidx=subidx, epoch=epoch, loss=loss)
+    print(f"Training completed after {num_epochs} epochs.")
+    print(f"============================================")
+
+    # save the embedding visualization to a file
+    save_path = "karate_club_training_progress.png"
+    plt.savefig(save_path, format='png', bbox_inches='tight')
+    print(f"Embedding visualization for training progress saved to {save_path}")
+    plt.show()
+    print(f"============================================")
 
 
 if __name__ == "__main__":

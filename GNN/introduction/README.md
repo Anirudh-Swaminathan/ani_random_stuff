@@ -91,6 +91,7 @@ Parameter Group 0
 )
 Number of training epochs: 400
 Visualizing node embeddings every 50 epochs
+Total number of visualizations: 8
 ============================================
 Starting training for 400 epochs...
 Epoch: 50, Loss: 0.5809

@@ -283,6 +283,10 @@ def main():
     vis_freq = 50
     print(f"Visualizing node embeddings every {vis_freq} epochs")
 
+    # compute the total number of visualizations
+    total_vis = num_epochs // vis_freq
+    print(f"Total number of visualizations: {total_vis}")
+
     # number of visualizations counter
     n_vis = 0
 
@@ -299,7 +303,7 @@ def main():
         if epoch % vis_freq == 0:
             # subplot index is based on the number of visualizations previously done
             n_vis += 1
-            subidx = (n_vis, 1, n_vis)
+            subidx = (total_vis, 1, n_vis)
 
             print(f"Epoch: {epoch}, Loss: {loss.item():.4f}")
             print(f"Plotting node embeddings for epoch {epoch}...")

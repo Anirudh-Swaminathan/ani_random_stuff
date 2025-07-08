@@ -65,6 +65,11 @@ def visualize_embedding(fig, h, color, subidx: tuple=(1, 1, 1), epoch=None, loss
         raise ValueError("subidx must be a tuple or a string representing subplot index.")
     if isinstance(subidx, tuple):
         assert len(subidx) == 3, "subidx must be a tuple of length 3 (nrows, ncols, index)."
+    elif isinstance(subidx, str):
+        # If subidx is a string of exactly 3 integer characters, convert it to a tuple
+        if len(subidx) != 3 or not subidx.isdigit():
+            raise ValueError("subidx string must be exactly 3 digits representing subplot index.")
+        subidx = (int(subidx[0]), int(subidx[1]), int(subidx[2]))
 
     # Add a subplot at subplot index subidx to the figure fig
     ax = fig.add_subplot(*subidx)
@@ -290,8 +295,8 @@ def main():
     # number of visualizations counter
     n_vis = 0
 
-    # create a figure for visualization
-    fig = plt.figure(figsize=(7, 7))
+    # create a figure for visualization with the total number of subplots
+    fig = plt.figure(figsize=(7 * total_vis, 7))
 
     print(f"============================================")
     print(f"Starting training for {num_epochs} epochs...")
@@ -306,7 +311,7 @@ def main():
             subidx = (total_vis, 1, n_vis)
 
             print(f"Epoch: {epoch}, Loss: {loss.item():.4f}")
-            print(f"Plotting node embeddings for epoch {epoch}...")
+            print(f"Plotting node embeddings for epoch {epoch} at subplot index {subidx}")
 
             # visualize the embeddings
             visualize_embedding(fig, h, color=data.y.cpu().numpy(), subidx=subidx, epoch=epoch, loss=loss)

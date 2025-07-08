@@ -95,21 +95,21 @@ Total number of visualizations: 8
 ============================================
 Starting training for 400 epochs...
 Epoch: 50, Loss: 0.5809
-Plotting node embeddings for epoch 50...
+Plotting node embeddings for epoch 50 at subplot index (8, 1, 1)
 Epoch: 100, Loss: 0.1823
-Plotting node embeddings for epoch 100...
+Plotting node embeddings for epoch 100 at subplot index (8, 1, 2)
 Epoch: 150, Loss: 0.1009
-Plotting node embeddings for epoch 150...
+Plotting node embeddings for epoch 150 at subplot index (8, 1, 3)
 Epoch: 200, Loss: 0.0671
-Plotting node embeddings for epoch 200...
+Plotting node embeddings for epoch 200 at subplot index (8, 1, 4)
 Epoch: 250, Loss: 0.0489
-Plotting node embeddings for epoch 250...
+Plotting node embeddings for epoch 250 at subplot index (8, 1, 5)
 Epoch: 300, Loss: 0.0376
-Plotting node embeddings for epoch 300...
+Plotting node embeddings for epoch 300 at subplot index (8, 1, 6)
 Epoch: 350, Loss: 0.0300
-Plotting node embeddings for epoch 350...
+Plotting node embeddings for epoch 350 at subplot index (8, 1, 7)
 Epoch: 400, Loss: 0.0247
-Plotting node embeddings for epoch 400...
+Plotting node embeddings for epoch 400 at subplot index (8, 1, 8)
 Training completed after 400 epochs.
 ============================================
 Embedding visualization for training progress saved to karate_club_training_progress.png

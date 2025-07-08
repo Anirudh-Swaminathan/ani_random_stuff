@@ -296,7 +296,7 @@ def main():
     n_vis = 0
 
     # create a figure for visualization with the total number of subplots
-    fig = plt.figure(figsize=(7 * total_vis, 7))
+    fig = plt.figure(figsize=(7, 7 * total_vis))
 
     print(f"============================================")
     print(f"Starting training for {num_epochs} epochs...")

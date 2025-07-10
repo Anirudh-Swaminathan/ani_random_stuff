@@ -7,4 +7,5 @@ The link to the tutorials is [PyTorch Geometric Tutorials](https://pytorch-geome
 ## Tutorials
 
 1. [Introduction: Hands-on Graph Neural Networks](./introduction/)
+2. [Node Classification with Graph Neural Networks](./node_classification/)
 

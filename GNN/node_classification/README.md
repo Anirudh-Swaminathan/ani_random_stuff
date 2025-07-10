@@ -15,6 +15,16 @@ python main.py
 ```plaintext
 Using PyTorch version: 2.0.1+cu117
 Using device: cuda
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.x
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.tx
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.allx
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.y
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.ty
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.ally
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.graph
+Downloading https://github.com/kimiyoung/planetoid/raw/master/data/ind.cora.test.index
+Processing...
+Done!
 Dataset loaded: Cora()
 ============ Dataset Information ============
 Number of graphs in the dataset: 1
@@ -27,9 +37,13 @@ Type of graph data: <class 'torch_geometric.data.data.Data'>
 Number of nodes in the graph: 2708
 Number of edges in the graph: 10556
 Average node degree: 3.90
-Number of training nodes: 140
 Number of classes: 7
+Number of training nodes: 140
 Training node label rate: 5.17%
+Number of validation nodes: 500
+Validation node label rate: 18.46%
+Number of test nodes: 1000
+Test node label rate: 36.93%
 Does graph have isolated nodes?: False
 Does graph have self-loops?: False
 Is the graph undirected?: True

@@ -2,7 +2,7 @@
 
 This folder contains the code for the second tutorial in the PyTorch Geometric series, which shows how to perform node classification using Graph Neural Networks (GNNs).
 
-The link to this Google Colab Notebook for this tutorial is [Introduction: Hands-on Graph Neural Networks](https://colab.research.google.com/drive/14OvFnAXggxB8vM4e8vSURUp1TaKnovzX)
+The link to this Google Colab Notebook for this tutorial is [Node Classification with Graph Neural Networks](https://colab.research.google.com/drive/14OvFnAXggxB8vM4e8vSURUp1TaKnovzX)
 
 ## Tutorial Outputs
 
@@ -73,5 +73,35 @@ Edge index tensor shape: torch.Size([10556, 2])
 Edge index tensor device: cuda:0
 Edge index tensor dtype: torch.int64
 ======================================================
+Graph saved to planetoid_cora_graph.png
+============ MLP Model Summary ===========
+MLP Model architecture:
+MLP(
+  (lin1): Linear(in_features=1433, out_features=16, bias=True)
+  (lin2): Linear(in_features=16, out_features=7, bias=True)
+)
+==========================================
+============ Loss Function ===========
+Loss function: CrossEntropyLoss()
+=====================================
+============ Optimizer ===========
+Optimizer: Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    lr: 0.01
+    maximize: False
+    weight_decay: 0.0005
+)
+===================================
+Number of training epochs: 150
 ```
 
+A visualization of the graph is found in this image output:
+
+![Planetoid Cora Graph](./planetoid_cora_graph.png "Planetoid Cora Graph")

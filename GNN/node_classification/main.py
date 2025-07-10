@@ -9,10 +9,17 @@ import torch
 # imports for visualization
 from matplotlib import pyplot as plt
 from sklearn.manifold import TSNE
+import networkx as nx
 
 # PyG imports
 from torch_geometric.datasets import Planetoid
 from torch_geometric.transforms import NormalizeFeatures
+from torch_geometric.utils import to_networkx
+
+# torch modeling imports
+import torch
+from torch.nn import Linear
+import torch.nn.functional as F
 
 """
 Node Classification with Graph Neural Networks (GNNs)
@@ -61,6 +68,68 @@ def visualize(h, color, save_path=None):
         print("No valid save path provided, displaying node embeddings instead.")
     plt.show()
 
+def visualize_graph(G, color, save_path=None):
+    """
+    Function to visualize a graph using NetworkX and Matplotlib.
+
+    @param G: A NetworkX graph object. (required)
+    @param color: A list of colors for the nodes. (required)
+    @param save_path: Optional path to save the visualization. If None, the plot will not be saved.
+    """
+    plt.figure(figsize=(7, 7))
+    plt.xticks([])
+    plt.yticks([])
+
+    # position the nodes using spring layout
+    pos = nx.spring_layout(G, seed=42)
+    #nx.draw(graph, pos, with_labels=True, node_color='lightblue', edge_color='gray', node_size=700, font_size=14)
+    nx.draw_networkx(G,
+                     pos=pos,
+                     with_labels=False,
+                     node_color=color,
+                     edge_color='gray',
+                     node_size=5,
+                     font_size=4,
+                     cmap="Set2")
+    plt.title("Planetoid Cora Graph Visualization")
+
+    # save image to file if save_path is valid image file path that can be created
+    if save_path and os.path.splitext(save_path)[1] in ['.png', '.jpg', '.jpeg']:
+        plt.savefig(save_path, format='png', bbox_inches='tight')
+        print(f"Graph saved to {save_path}")
+    else:
+        print("No valid save path provided, displaying graph instead.")
+    plt.show()
+
+class MLP(torch.nn.Module):
+    """
+    A simple Multi-Layer Perceptron (MLP) model for node classification.
+    """
+    def __init__(self, num_features, hidden_channels, num_classes):
+        # call the parent class constructor
+        super().__init__()
+
+        # set torch manual seed for reproducibility
+        torch.manual_seed(12345)
+
+        # First Linear layer
+        self.lin1 = Linear(num_features, hidden_channels)
+
+        # Second Linear layer
+        self.lin2 = Linear(hidden_channels, num_classes)
+
+    def forward(self, x):
+        # Apply the first linear layer followed by ReLU activation
+        x = self.lin1(x)
+        x = x.relu()
+
+        # Apply dropout for regularization
+        x = F.dropout(x, p=0.5, training=self.training)
+
+        # Apply the second linear layer
+        x = self.lin2(x)
+        return x
+
 
 def main():
     # capture torch version
@@ -81,6 +150,10 @@ def main():
         print("CUDA is not available, using CPU.")
 
     # load the Planetoid dataset (Cora)
+    # store the dataset in the data/Planetoid directory
+    # if the dataset is not already present in the directory, it will be downloaded automatically
+    # NormalizeFeatures transform is used to min-shift row-normalize the
+    # bag-of-words input node feature vectors to sum to one
     dataset = Planetoid(root="data/Planetoid", name="Cora", transform=NormalizeFeatures())
 
     # print dataset information
@@ -137,6 +210,38 @@ def main():
     print(f"Edge index tensor device: {edge_index.t().device}")
     print(f"Edge index tensor dtype: {edge_index.t().dtype}")
     print(f"======================================================")
+
+    # convert the graph to networkx
+    G = to_networkx(data, to_undirected=True, remove_self_loops=True)
+
+    # visualize the graph and save it to a file
+    visualize_graph(G, color=data.y.cpu().numpy(), save_path="planetoid_cora_graph.png")
+
+    # instantiate the MLP model
+    MLP_model = MLP(num_features=dataset.num_features, hidden_channels=16, num_classes=dataset.num_classes)
+    MLP_model = MLP_model.to(device)
+    print(f"============ MLP Model Summary ===========")
+    print(f"MLP Model architecture:\n{MLP_model}")
+    print(f"==========================================")
+
+    # set the model to training mode
+    MLP_model.train()
+
+    # Define the Loss function (CrossEntropyLoss for multi-class classification)
+    criterion = torch.nn.CrossEntropyLoss()
+    print(f"============ Loss Function ===========")
+    print(f"Loss function: {criterion}")
+    print(f"=====================================")
+
+    # Define the optimizer (Adaptive Moment Estimation (Adam) optimizer)
+    optimizer = torch.optim.Adam(MLP_model.parameters(), lr=0.01, weight_decay=5e-4)
+    print(f"============ Optimizer ===========")
+    print(f"Optimizer: {optimizer}")
+    print(f"===================================")
+
+    # Number of training epochs
+    num_epochs = 150
+    print(f"Number of training epochs: {num_epochs}")
 
 
 if __name__ == "__main__":

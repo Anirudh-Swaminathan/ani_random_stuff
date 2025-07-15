@@ -100,8 +100,85 @@ Parameter Group 0
 )
 ===================================
 Number of training epochs: 150
+Printing training progress every 25 epochs
+======================= Training MLP Model =======================
+Training MLP Model for 150 epochs...
+Epoch: 001; Training Loss: 1.9610
+Epoch: 025; Training Loss: 1.6550
+Epoch: 050; Training Loss: 1.1231
+Epoch: 075; Training Loss: 0.7026
+Epoch: 100; Training Loss: 0.6053
+Epoch: 125; Training Loss: 0.6383
+Epoch: 150; Training Loss: 0.4885
+======================= Testing MLP Model =======================
+MLP Model Test Set Accuracy: 0.5830
+============ GCN Model Summary ===========
+GCN Model architecture:
+GCN(
+  (conv1): GCNConv(1433, 16)
+  (conv2): GCNConv(16, 7)
+)
+==========================================
+============ Visualizing GCN Model Node Embeddings Before Training ===========
+Node embeddings visualization saved to GCN_model_node_embeddings_before_training.png
+Saved plot of GCN model node embeddings before training to GCN_model_node_embeddings_before_training.png
+==============================================
+============ Loss Function ===========
+Loss function: CrossEntropyLoss()
+=====================================
+============ Optimizer ===========
+Optimizer: Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    lr: 0.01
+    maximize: False
+    weight_decay: 0.0005
+)
+===================================
+Number of training epochs: 150
+Printing training progress every 25 epochs
+======================= Training GCN Model =======================
+Training GCN Model for 150 epochs...
+Epoch: 001; Training Loss: 1.9465
+Epoch: 025; Training Loss: 1.6765
+Epoch: 050; Training Loss: 1.1994
+Epoch: 075; Training Loss: 0.7453
+Epoch: 100; Training Loss: 0.5580
+Epoch: 125; Training Loss: 0.4847
+Epoch: 150; Training Loss: 0.4133
+======================= Testing GCN Model =======================
+GCN Model Test Set Accuracy: 0.8180
+============ Visualizing GCN Model Node Embeddings After Training ===========
+Node embeddings visualization saved to GCN_model_node_embeddings_after_training.png
+Saved plot of GCN model node embeddings after training to GCN_model_node_embeddings_after_training.png
+==============================================
 ```
 
 A visualization of the graph is found in this image output:
 
 ![Planetoid Cora Graph](./planetoid_cora_graph.png "Planetoid Cora Graph")
+
+### GCN Model Node Embeddings Before Training
+
+Without training, the node embeddings, which are 7-dimensional compressed to 2D using t-SNE, are scattered randomly in 
+the projected space.
+
+A visualization of the initial node embeddings before training is found in this image output.
+Note that the colors correspond to the true node classes, which are not known to the model before training.
+
+![GCN Model Node Embeddings Before Training](./GCN_model_node_embeddings_before_training.png "GCN Model Node Embeddings Before Training")
+
+### GCN Model Node Embeddings After Training
+
+After training, the output node embeddings of the trained GCN model produce far superior clustering of nodes of the same
+class in the projected space, indicating that the model has learned to separate nodes based on their classes.
+
+A visualization of the final node embeddings after training is found in this image output.
+
+![GCN Model Node Embeddings After Training](./GCN_model_node_embeddings_after_training.png "GCN Model Node Embeddings After Training")

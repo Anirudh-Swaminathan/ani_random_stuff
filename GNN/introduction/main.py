@@ -17,6 +17,7 @@ Introduction to PyTorch Geometric and Karate Club Dataset
 Tutorial Google Colab Notebook Link: https://colab.research.google.com/drive/1h3-vJGRVloF5zStxL5I0rSy4ZUPNsjy8
 """
 
+
 # function to visualize graph
 def visualize_graph(G, color, save_path=None):
     plt.figure(figsize=(7, 7))
@@ -44,8 +45,9 @@ def visualize_graph(G, color, save_path=None):
         print("No valid save path provided, displaying graph instead.")
     plt.show()
 
+
 # function to visualize embeddings
-def visualize_embedding(fig, h, color, subidx: tuple=(1, 1, 1), epoch=None, loss=None):
+def visualize_embedding(fig, h, color, subidx: tuple = (1, 1, 1), epoch=None, loss=None):
     """
     Visualizes the node embeddings in a 2D scatter plot.
 
@@ -79,12 +81,12 @@ def visualize_embedding(fig, h, color, subidx: tuple=(1, 1, 1), epoch=None, loss
 
     # plot a scatter map of first two dimensions of h
     ax.scatter(h[:, 0],
-                h[:, 1],
-                c=color,
-                cmap="Set2",
-                s=140,
-                edgecolor='k',
-                alpha=0.7)
+               h[:, 1],
+               c=color,
+               cmap="Set2",
+               s=140,
+               edgecolor='k',
+               alpha=0.7)
 
     if epoch is not None and loss is not None:
         ax.set_title(f"Epoch: {epoch}, Loss: {loss.item():.4f}", fontsize=16)
@@ -99,6 +101,7 @@ class GCN(torch.nn.Module):
     """
     A simple Graph Convolutional Network (GCN) model for node classification.
     """
+
     def __init__(self, num_features, num_classes):
         # call the parent constructor
         super().__init__()
@@ -138,6 +141,7 @@ class GCN(torch.nn.Module):
         # Return the output and the intermediate node embeddings
         return out, h
 
+
 def train(model, data, optimizer, criterion, device):
     """
     A function to train the GCN model on the Karate Club dataset.
@@ -165,6 +169,7 @@ def train(model, data, optimizer, criterion, device):
     # Update the model parameters using the optimizer based on the computed gradients
     optimizer.step()
     return loss, h
+
 
 def main():
     # capture torch version
@@ -328,4 +333,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

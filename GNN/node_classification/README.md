@@ -81,6 +81,10 @@ MLP(
   (lin2): Linear(in_features=16, out_features=7, bias=True)
 )
 ==========================================
+============ Visualizing MLP Model Node Embeddings Before Training ===========
+Node embeddings visualization saved to MLP_model_node_embeddings_before_training.png
+Saved plot of MLP model node embeddings before training to MLP_model_node_embeddings_before_training.png
+==============================================
 ============ Loss Function ===========
 Loss function: CrossEntropyLoss()
 =====================================
@@ -99,10 +103,10 @@ Parameter Group 0
     weight_decay: 0.0005
 )
 ===================================
-Number of training epochs: 150
+Number of training epochs: 200
 Printing training progress every 25 epochs
 ======================= Training MLP Model =======================
-Training MLP Model for 150 epochs...
+Training MLP Model for 200 epochs...
 Epoch: 001; Training Loss: 1.9610
 Epoch: 025; Training Loss: 1.6550
 Epoch: 050; Training Loss: 1.1231
@@ -110,8 +114,14 @@ Epoch: 075; Training Loss: 0.7026
 Epoch: 100; Training Loss: 0.6053
 Epoch: 125; Training Loss: 0.6383
 Epoch: 150; Training Loss: 0.4885
+Epoch: 175; Training Loss: 0.4161
+Epoch: 200; Training Loss: 0.4758
 ======================= Testing MLP Model =======================
-MLP Model Test Set Accuracy: 0.5830
+MLP Model Test Set Accuracy: 0.5940
+============ Visualizing MLP Model Node Embeddings After Training ===========
+Node embeddings visualization saved to MLP_model_node_embeddings_after_training.png
+Saved plot of MLP model node embeddings after training to MLP_model_node_embeddings_after_training.png
+==============================================
 ============ GCN Model Summary ===========
 GCN Model architecture:
 GCN(
@@ -141,28 +151,97 @@ Parameter Group 0
     weight_decay: 0.0005
 )
 ===================================
-Number of training epochs: 150
+Number of training epochs: 200
 Printing training progress every 25 epochs
 ======================= Training GCN Model =======================
-Training GCN Model for 150 epochs...
+Training GCN Model for 200 epochs...
 Epoch: 001; Training Loss: 1.9465
 Epoch: 025; Training Loss: 1.6765
 Epoch: 050; Training Loss: 1.1994
-Epoch: 075; Training Loss: 0.7453
+Epoch: 075; Training Loss: 0.7454
 Epoch: 100; Training Loss: 0.5580
 Epoch: 125; Training Loss: 0.4847
 Epoch: 150; Training Loss: 0.4133
+Epoch: 175; Training Loss: 0.3673
+Epoch: 200; Training Loss: 0.3357
 ======================= Testing GCN Model =======================
-GCN Model Test Set Accuracy: 0.8180
+GCN Model Test Set Accuracy: 0.8110
 ============ Visualizing GCN Model Node Embeddings After Training ===========
 Node embeddings visualization saved to GCN_model_node_embeddings_after_training.png
 Saved plot of GCN model node embeddings after training to GCN_model_node_embeddings_after_training.png
+==============================================
+============ GAT Model Summary ===========
+GAT Model architecture:
+GAT(
+  (conv1): GATConv(1433, 8, heads=8)
+  (conv2): GATConv(64, 7, heads=1)
+)
+==========================================
+============ Visualizing GAT Model Node Embeddings Before Training ===========
+Node embeddings visualization saved to GAT_model_node_embeddings_before_training.png
+Saved plot of GAT model node embeddings before training to GAT_model_node_embeddings_before_training.png
+==============================================
+============ Loss Function ===========
+Loss function: CrossEntropyLoss()
+=====================================
+============ Optimizer ===========
+Optimizer: Adam (
+Parameter Group 0
+    amsgrad: False
+    betas: (0.9, 0.999)
+    capturable: False
+    differentiable: False
+    eps: 1e-08
+    foreach: None
+    fused: None
+    lr: 0.005
+    maximize: False
+    weight_decay: 0.0005
+)
+===================================
+Number of training epochs: 200
+Printing training progress every 25 epochs
+======================= Training GAT Model =======================
+Training GAT Model for 200 epochs...
+Epoch: 001; Training Loss: 1.9498
+Epoch: 025; Training Loss: 1.7442
+Epoch: 050; Training Loss: 1.4166
+Epoch: 075; Training Loss: 1.1243
+Epoch: 100; Training Loss: 0.9245
+Epoch: 125; Training Loss: 0.8471
+Epoch: 150; Training Loss: 0.7911
+Epoch: 175; Training Loss: 0.7067
+Epoch: 200; Training Loss: 0.7097
+======================= Testing GAT Model =======================
+GAT Model Test Set Accuracy: 0.8170
+============ Visualizing GAT Model Node Embeddings After Training ===========
+Node embeddings visualization saved to GAT_model_node_embeddings_after_training.png
+Saved plot of GAT model node embeddings after training to GAT_model_node_embeddings_after_training.png
 ==============================================
 ```
 
 A visualization of the graph is found in this image output:
 
 ![Planetoid Cora Graph](./planetoid_cora_graph.png "Planetoid Cora Graph")
+
+
+### MLP Model Node Embeddings Before Training
+
+Without training, the node embeddings, which are 7-dimensional compressed to 2D using t-SNE, are scattered randomly in
+the projected space.
+
+A visualization of the initial node embeddings before training is found in this image output.
+Note that the colors correspond to the true node classes, which are not known to the model before training.
+
+![MLP Model Node Embeddings Before Training](./MLP_model_node_embeddings_before_training.png "MLP Model Node Embeddings Before Training")
+
+### MLP Model Node Embeddings After Training
+
+After training, the output node embeddings of the trained MLP model produce some clustering of nodes of the same class
+in the projected space, but not as well as the GCN or GAT models.
+A visualization of the final node embeddings after training is found in this image output.
+
+![MLP Model Node Embeddings After Training](./MLP_model_node_embeddings_after_training.png "MLP Model Node Embeddings After Training")
 
 ### GCN Model Node Embeddings Before Training
 
@@ -182,3 +261,22 @@ class in the projected space, indicating that the model has learned to separate 
 A visualization of the final node embeddings after training is found in this image output.
 
 ![GCN Model Node Embeddings After Training](./GCN_model_node_embeddings_after_training.png "GCN Model Node Embeddings After Training")
+
+### GAT Model Node Embeddings Before Training
+
+Without training, the node embeddings, which are 7-dimensional compressed to 2D using t-SNE, are scattered randomly in
+the projected space.
+
+A visualization of the initial node embeddings before training is found in this image output.
+Note that the colors correspond to the true node classes, which are not known to the model before training.
+
+![GAT Model Node Embeddings Before Training](./GAT_model_node_embeddings_before_training.png "GAT Model Node Embeddings Before Training")
+
+### GAT Model Node Embeddings After Training
+
+After training, the output node embeddings of the trained GAT model produce far superior clustering of nodes of the same
+class in the projected space, indicating that the model has learned to separate nodes based on their classes.
+
+A visualization of the final node embeddings after training is found in this image output.
+
+![GAT Model Node Embeddings After Training](./GAT_model_node_embeddings_after_training.png "GAT Model Node Embeddings After Training")

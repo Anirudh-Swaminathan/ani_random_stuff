@@ -11,12 +11,13 @@ import torch
 from matplotlib import pyplot as plt
 from sklearn.manifold import TSNE
 import networkx as nx
+from sympy.physics.vector import outer
 
 # PyG imports
 from torch_geometric.datasets import Planetoid
 from torch_geometric.transforms import NormalizeFeatures
 from torch_geometric.utils import to_networkx
-from torch_geometric.nn import GCNConv
+from torch_geometric.nn import GCNConv, GATConv
 
 # torch modeling imports
 import torch
@@ -190,6 +191,57 @@ class GCN(torch.nn.Module):
         x = self.conv2(x, edge_index)
         return x
 
+class GAT(torch.nn.Module):
+    """
+    A simple 2-layer Graph Attention Network (GAT) model for node classification.
+
+    The default is to use 8 attention heads in the first layer and 1 head in the second layer.
+    Hidden channels dimension is 8 per head by default.
+    """
+    def __init__(self, num_features, num_classes, hidden_channels_per_head: int = 8, n_heads: int = 8):
+        """
+        Constructor for the GAT model.
+
+        @param num_features: The number of input features per node (required).
+        @param num_classes: The number of output classes for classification (required).
+        @param hidden_channels_per_head: int; The number of hidden channels (neurons) in the GAT layer per attention head
+                                        (default is 8). (Optional).
+        @param n_heads: int; Number of attention heads (default is 8). (Optional).
+
+        @return: None
+        """
+        # Call the parent class constructor
+        super().__init__()
+
+        # set torch manual seed for reproducibility
+        torch.manual_seed(1234567)
+
+        # First graph attention layer
+        self.conv1 = GATConv(num_features, hidden_channels_per_head, heads=n_heads, dropout=0.6)
+
+        # Second graph attention layer
+        self.conv2 = GATConv(hidden_channels_per_head * n_heads, num_classes, heads=1, dropout=0.6)
+
+    def forward(self, x, edge_index):
+        """
+        Forward pass of the GAT model.
+
+        @param x: Node feature matrix of shape [num_nodes, num_features] (required).
+        @param edge_index: Graph connectivity in COO format with shape [2, num_edges] (required).
+
+        @return x: The output logits for each node of shape [num_nodes, num_classes].
+        """
+        # First graph attention layer with ELU activation and Dropout for regularization
+        # Dropout is applied before the first layer only
+        x = F.dropout(x, p=0.6, training=self.training)
+        x = self.conv1(x, edge_index)
+        x = F.elu(x)
+
+        # Second graph attention layer is applied after dropout
+        x = F.dropout(x, p=0.6, training=self.training)
+        x = self.conv2(x, edge_index)
+        return x
+
 def train(model, data, optimizer, criterion, device, mtype: ModelType = ModelType.MLP):
     """
     A function to train the model for one epoch.
@@ -214,7 +266,7 @@ def train(model, data, optimizer, criterion, device, mtype: ModelType = ModelTyp
     if mtype == ModelType.MLP:
         # for MLP, we only need node features
         out = model(data.x.to(device))
-    elif mtype == ModelType.GCN:
+    else:
         # for GCN, we need both node features and edge index
         out = model(data.x.to(device), data.edge_index.to(device))
 
@@ -247,7 +299,7 @@ def test(model, data, device, mtype: ModelType = ModelType.MLP):
     with torch.no_grad():
         if mtype == ModelType.MLP:
             out = model(data.x.to(device))
-        elif mtype == ModelType.GCN:
+        else:
             out = model(data.x.to(device), data.edge_index.to(device))
 
         # get the predicted class with the highest probability by taking the argmax of the output logits
@@ -280,6 +332,9 @@ def train_test(data, device, num_features, num_classes, mtype: ModelType = Model
         model = MLP(num_features=num_features, hidden_channels=16, num_classes=num_classes)
     elif mtype == ModelType.GCN:
         model = GCN(num_features=num_features, hidden_channels=16, num_classes=num_classes)
+    else:
+        assert (mtype == ModelType.GAT), f"Unsupported model type: {mtype}. Supported types are MLP, GCN, GAT."
+        model = GAT(num_features=num_features, num_classes=num_classes, hidden_channels_per_head=8, n_heads=8)
 
     model = model.to(device)
 
@@ -287,16 +342,18 @@ def train_test(data, device, num_features, num_classes, mtype: ModelType = Model
     print(f"{mtype.value} Model architecture:\n{model}")
     print(f"==========================================")
 
-    # visualize the node embeddings before training for GCN model
-    if mtype == ModelType.GCN:
-        print(f"============ Visualizing {mtype.value} Model Node Embeddings Before Training ===========")
-        model.eval()
-        with torch.no_grad():
+    # visualize the node embeddings before training for the model
+    print(f"============ Visualizing {mtype.value} Model Node Embeddings Before Training ===========")
+    model.eval()
+    with torch.no_grad():
+        if mtype != ModelType.MLP:
             out = model(data.x.to(device), data.edge_index.to(device))
-            visualize(out, color=data.y.cpu(), save_path=f"{mtype.value}_model_node_embeddings_before_training.png")
-            print(f"Saved plot of {mtype.value} model node embeddings before training to "
-                  f"{mtype.value}_model_node_embeddings_before_training.png")
-        print(f"==============================================")
+        else:
+            out = model(data.x.to(device))
+        visualize(out, color=data.y.cpu(), save_path=f"{mtype.value}_model_node_embeddings_before_training.png")
+        print(f"Saved plot of {mtype.value} model node embeddings before training to "
+              f"{mtype.value}_model_node_embeddings_before_training.png")
+    print(f"==============================================")
 
     # set the model to training mode
     model.train()
@@ -308,13 +365,16 @@ def train_test(data, device, num_features, num_classes, mtype: ModelType = Model
     print(f"=====================================")
 
     # Define the optimizer (Adaptive Moment Estimation (Adam) optimizer)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
+    if mtype != ModelType.GAT:
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.01, weight_decay=5e-4)
+    else:
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.005, weight_decay=5e-4)
     print(f"============ Optimizer ===========")
     print(f"Optimizer: {optimizer}")
     print(f"===================================")
 
     # Number of training epochs
-    num_epochs = 150
+    num_epochs = 200
     print(f"Number of training epochs: {num_epochs}")
 
     # print frequency, how often in epochs to print training progress
@@ -335,16 +395,18 @@ def train_test(data, device, num_features, num_classes, mtype: ModelType = Model
     test_acc = test(model, data, device, mtype)
     print(f"{mtype.value} Model Test Set Accuracy: {test_acc:.4f}")
 
-    # Visualize the node embeddings after training for GCN model
-    if mtype == ModelType.GCN:
-        print(f"============ Visualizing {mtype.value} Model Node Embeddings After Training ===========")
-        model.eval()
-        with torch.no_grad():
+    # Visualize the node embeddings after training for the model
+    print(f"============ Visualizing {mtype.value} Model Node Embeddings After Training ===========")
+    model.eval()
+    with torch.no_grad():
+        if mtype != ModelType.MLP:
             out = model(data.x.to(device), data.edge_index.to(device))
-            visualize(out, color=data.y.cpu(), save_path=f"{mtype.value}_model_node_embeddings_after_training.png")
-            print(f"Saved plot of {mtype.value} model node embeddings after training to "
-                  f"{mtype.value}_model_node_embeddings_after_training.png")
-        print(f"==============================================")
+        else:
+            out = model(data.x.to(device))
+        visualize(out, color=data.y.cpu(), save_path=f"{mtype.value}_model_node_embeddings_after_training.png")
+        print(f"Saved plot of {mtype.value} model node embeddings after training to "
+              f"{mtype.value}_model_node_embeddings_after_training.png")
+    print(f"==============================================")
 
 
 
@@ -439,6 +501,9 @@ def main():
 
     # call the train test loop for GCN model
     train_test(data, device, num_features=dataset.num_features, num_classes=dataset.num_classes, mtype=ModelType.GCN)
+
+    # call the train test loop for GAT model
+    train_test(data, device, num_features=dataset.num_features, num_classes=dataset.num_classes, mtype=ModelType.GAT)
 
 
 if __name__ == "__main__":

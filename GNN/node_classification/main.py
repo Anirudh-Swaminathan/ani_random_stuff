@@ -116,34 +116,84 @@ class ModelType(Enum):
     def has_value(cls, value):
         return value in cls._value2member_map_
 
+# define an enum for train, test or validation dataset split
+class DatasetSplit(Enum):
+    TRAIN = "train"
+    TEST = "test"
+    VALIDATION = "validation"
+
+    @classmethod
+    def has_value(cls, value):
+        return value in cls._value2member_map_
+
 class MLP(torch.nn.Module):
     """
     A simple Multi-Layer Perceptron (MLP) model for node classification.
     """
 
-    def __init__(self, num_features, hidden_channels, num_classes):
+    def __init__(self, num_features: int, hidden_channels: int, num_classes: int, n_layers: int = 2):
+        """
+        Constructor for the MLP model.
+
+        @param num_features: int; The number of input features per node (required).
+        @param hidden_channels: int; The number of hidden channels (neurons) in the MLP layer (required).
+        @param num_classes: int; The number of output classes for classification (required).
+        @param n_layers: int; The number of layers in the MLP (default is 2). (Optional)
+
+        @return: None
+        """
+        # validate the parameters
+        assert isinstance(num_features, int) and num_features > 0
+        assert isinstance(hidden_channels, int) and hidden_channels > 0
+        assert isinstance(num_classes, int) and num_classes > 0
+        assert isinstance(n_layers, int) and n_layers >= 2, "n_layers must be at least 2 for MLP"
+
+        # set the number of layers to class variable
+        self.n_layers = n_layers
+
         # call the parent class constructor
         super().__init__()
 
         # set torch manual seed for reproducibility
         torch.manual_seed(12345)
 
+        # list of linear layers
+        self.lins = list()
+
         # First Linear layer
         self.lin1 = Linear(num_features, hidden_channels)
+        self.lins.append(self.lin1)
 
-        # Second Linear layer
-        self.lin2 = Linear(hidden_channels, num_classes)
+        # loop through n-2 layers, each with hidden_channels -> hidden_channels
+        for _ in range(n_layers - 2):
+            self.lins.append(Linear(hidden_channels, hidden_channels))
+
+        # Final Linear layer
+        self.lin_end = Linear(hidden_channels, num_classes)
+        self.lins.append(self.lin_end)
 
     def forward(self, x):
-        # Apply the first linear layer followed by ReLU activation
-        x = self.lin1(x)
-        x = x.relu()
+        """
+        Forward pass of the MLP model.
 
-        # Apply dropout for regularization
-        x = F.dropout(x, p=0.5, training=self.training)
+        @param x: torch.Tensor; Node feature matrix of shape [num_nodes, num_features] (required).
 
-        # Apply the second linear layer
-        x = self.lin2(x)
+        @return x: torch.Tensor; The output logits for each node of shape [num_nodes, num_classes].
+        """
+        # loop through all linear layers except the last one
+        # apply each linear layer followed by ReLU activation, followed by dropout
+        for i in range(self.n_layers - 1):
+            # apply the ith linear layer
+            x = self.lins[i](x)
+
+            # apply ReLU activation
+            x = F.relu(x)
+
+            # Apply dropout for regularization
+            x = F.dropout(x, p=0.5, training=self.training)
+
+        # Apply the last linear layer
+        x = self.lins[-1](x)
         return x
 
 class GCN(torch.nn.Module):
@@ -151,27 +201,46 @@ class GCN(torch.nn.Module):
     A simple Graph Convolutional Network (GCN) model for node classification.
     """
 
-    def __init__(self, num_features, hidden_channels, num_classes):
+    def __init__(self, num_features: int, hidden_channels: int, num_classes: int, n_layers: int = 2):
         """
         Constructor for the GCN model.
 
-        @param num_features: The number of input features per node (required).
-        @param hidden_channels: The number of hidden channels (neurons) in the GCN layer (required).
-        @param num_classes: The number of output classes for classification (required).
+        @param num_features: int; The number of input features per node (required).
+        @param hidden_channels: int; The number of hidden channels (neurons) in the GCN layer (required).
+        @param num_classes: int; The number of output classes for classification (required).
+        @param n_layers: int; The number of layers in the GCN (default is 2). (Optional)
 
         @return: None
         """
+        # validate the parameters
+        assert isinstance(num_features, int) and num_features > 0
+        assert isinstance(hidden_channels, int) and hidden_channels > 0
+        assert isinstance(num_classes, int) and num_classes > 0
+        assert isinstance(n_layers, int) and n_layers >= 2, "n_layers must be at least 2 for GCN"
+
+        # set the number of layers to class variable
+        self.n_layers = n_layers
+
         # call the parent class constructor
         super().__init__()
 
         # set torch manual seed for reproducibility
         torch.manual_seed(1234567)
 
+        # list of graph convolutional layers
+        self.convs = list()
+
         # First graph convolutional layer
         self.conv1 = GCNConv(num_features, hidden_channels)
+        self.convs.append(self.conv1)
 
-        # Secong graph convolutional layer
-        self.conv2 = GCNConv(hidden_channels, num_classes)
+        # loop through n-2 layers, each with hidden_channels -> hidden_channels
+        for _ in range(n_layers - 2):
+            self.convs.append(GCNConv(hidden_channels, hidden_channels))
+
+        # Last graph convolutional layer
+        self.conv_end = GCNConv(hidden_channels, num_classes)
+        self.convs.append(self.conv_end)
 
     def forward(self, x, edge_index):
         """
@@ -182,13 +251,20 @@ class GCN(torch.nn.Module):
 
         @return x: The output logits for each node of shape [num_nodes, num_classes].
         """
-        # First graph convolution layer with ReLU activation and Dropout for regularization
-        x = self.conv1(x, edge_index)
-        x = x.relu()
-        x = F.dropout(x, p=0.5, training=self.training)
+        # loop through all graph convolutional layers except the last one
+        # Apply each graph convolution layer with ReLU activation and Dropout for regularization
+        for i in range(self.n_layers - 1):
+            # apply the ith graph convolutional layer
+            x = self.convs[i](x, edge_index)
 
-        # Second graph convolution layer
-        x = self.conv2(x, edge_index)
+            # apply ReLU activation
+            x = x.relu()
+
+            # Apply dropout for regularization
+            x = F.dropout(x, p=0.5, training=self.training)
+
+        # Final graph convolution layer
+        x = self.convs[-1](x, edge_index)
         return x
 
 class GAT(torch.nn.Module):
@@ -198,29 +274,49 @@ class GAT(torch.nn.Module):
     The default is to use 8 attention heads in the first layer and 1 head in the second layer.
     Hidden channels dimension is 8 per head by default.
     """
-    def __init__(self, num_features, num_classes, hidden_channels_per_head: int = 8, n_heads: int = 8):
+    def __init__(self, num_features: int, num_classes: int, hidden_channels_per_head: int = 8, n_heads: int = 8, n_layers: int = 2):
         """
         Constructor for the GAT model.
 
-        @param num_features: The number of input features per node (required).
-        @param num_classes: The number of output classes for classification (required).
+        @param num_features: int; The number of input features per node (required).
+        @param num_classes: int; The number of output classes for classification (required).
         @param hidden_channels_per_head: int; The number of hidden channels (neurons) in the GAT layer per attention head
                                         (default is 8). (Optional).
         @param n_heads: int; Number of attention heads (default is 8). (Optional).
+        @param n_layers: int; The number of layers in the GAT (default is 2). (Optional)
 
         @return: None
         """
+        # validate the parameters
+        assert isinstance(num_features, int) and num_features > 0
+        assert isinstance(hidden_channels_per_head, int) and hidden_channels_per_head > 0
+        assert isinstance(num_classes, int) and num_classes > 0
+        assert isinstance(n_heads, int) and n_heads > 0
+        assert isinstance(n_layers, int) and n_layers >= 2, "n_layers must be at least 2 for GCN"
+
+        # set the number of layers to class variable
+        self.n_layers = n_layers
+
         # Call the parent class constructor
         super().__init__()
 
         # set torch manual seed for reproducibility
         torch.manual_seed(1234567)
 
+        # list of graph attention layers
+        self.convs = list()
+
         # First graph attention layer
         self.conv1 = GATConv(num_features, hidden_channels_per_head, heads=n_heads, dropout=0.6)
+        self.convs.append(self.conv1)
 
-        # Second graph attention layer
-        self.conv2 = GATConv(hidden_channels_per_head * n_heads, num_classes, heads=1, dropout=0.6)
+        # loop through n-2 layers, each with hidden_channels_per_head * n_heads -> hidden_channels_per_head * n_heads
+        for _ in range(n_layers - 2):
+            self.convs.append(GATConv(hidden_channels_per_head * n_heads, hidden_channels_per_head, heads=n_heads, dropout=0.6))
+
+        # Last graph attention layer
+        self.conv_end = GATConv(hidden_channels_per_head * n_heads, num_classes, heads=1, dropout=0.6)
+        self.convs.append(self.conv_end)
 
     def forward(self, x, edge_index):
         """
@@ -231,15 +327,16 @@ class GAT(torch.nn.Module):
 
         @return x: The output logits for each node of shape [num_nodes, num_classes].
         """
-        # First graph attention layer with ELU activation and Dropout for regularization
-        # Dropout is applied before the first layer only
-        x = F.dropout(x, p=0.6, training=self.training)
-        x = self.conv1(x, edge_index)
-        x = F.elu(x)
+        # Apply each graph attention layer with ELU activation and Dropout for regularization
+        # Dropout is applied before each layer
+        for i in range(self.n_layers - 1):
+            x = F.dropout(x, p=0.6, training=self.training)
+            x = self.convs[i](x, edge_index)
+            x = F.elu(x)
 
-        # Second graph attention layer is applied after dropout
+        # Final graph attention layer is applied after dropout
         x = F.dropout(x, p=0.6, training=self.training)
-        x = self.conv2(x, edge_index)
+        x = self.convs[-1](x, edge_index)
         return x
 
 def train(model, data, optimizer, criterion, device, mtype: ModelType = ModelType.MLP):
@@ -280,7 +377,7 @@ def train(model, data, optimizer, criterion, device, mtype: ModelType = ModelTyp
     optimizer.step()
     return loss
 
-def test(model, data, device, mtype: ModelType = ModelType.MLP):
+def test(model, data, device, mtype: ModelType = ModelType.MLP, split: DatasetSplit = DatasetSplit.TEST):
     """
     A function to evaluate the model on the test set.
 
@@ -289,9 +386,13 @@ def test(model, data, device, mtype: ModelType = ModelType.MLP):
     @param device: The device (CPU or GPU) to perform computations on (required).
     @param mtype: Model type (default is MLP).
                     This can be used to handle any model-specific logic if needed. (Optional)
+    @param split: DatasetSplit enum; value indicating whether to evaluate on the test or validation set. (Optional)
 
-    @return test_acc: The accuracy of the model on the test set.
+    @return acc: The accuracy of the model on the test/validation set.
     """
+    # assert that the split is either TEST or VALIDATION
+    assert split in [DatasetSplit.TEST, DatasetSplit.VALIDATION], f"Invalid split type. Must be either {DatasetSplit.TEST.value} or {DatasetSplit.VALIDATION.value}."
+
     # set the model to evaluation mode
     model.eval()
 
@@ -305,13 +406,20 @@ def test(model, data, device, mtype: ModelType = ModelType.MLP):
         # get the predicted class with the highest probability by taking the argmax of the output logits
         pred = out.argmax(dim=1)
 
-        # check against ground-truth labels for the test nodes only
-        test_correct = pred[data.test_mask] == data.y[data.test_mask].to(device)
+        if split == DatasetSplit.TEST:
+            # check against ground-truth labels for the test nodes only
+            correct = pred[data.test_mask] == data.y[data.test_mask].to(device)
 
-        # compute ratio of correct predictions to total test nodes
-        test_acc = int(test_correct.sum()) / int(data.test_mask.sum())
+            # compute ratio of correct predictions to total test nodes
+            acc = int(correct.sum()) / int(data.test_mask.sum())
+        else:
+            # check against ground-truth labels for the validation nodes only
+            correct = pred[data.val_mask] == data.y[data.val_mask].to(device)
 
-    return test_acc
+            # compute ratio of correct predictions to total validation nodes
+            acc = int(correct.sum()) / int(data.val_mask.sum())
+
+    return acc
 
 def train_test(data, device, num_features, num_classes, mtype: ModelType = ModelType.MLP):
     """
